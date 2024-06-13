@@ -19,6 +19,7 @@ async function connectToDb(){
 connectToDb()
 
 app.use('/api/auth', require('./routes/authRouter'))
+app.use('/api/issues', require("./routes/issueRouter"))
 
 app.use((err, req, res, next) => {
     console.log(err)
