@@ -1,39 +1,48 @@
-import React, {useState} from 'react';
+import React, { useState, useContext } from 'react';
 import Form from './Form';
+import { UserContext } from '../context/UserProvider';
 
 function Auth() {
 
-    const [isMember, setIsMember] = useState(false)
+  const { login, signup } = useContext(UserContext)
 
-    const toggleForm = () => {
-        setIsMember(!isMember)
-    }
+  const [isMember, setIsMember] = useState(false)
 
-    return ( 
-        <div id = "auth-div">
+  const toggleForm = () => {
+    setIsMember(!isMember)
+  }
 
-        {
-          isMember ? 
-          
+  return (
+    <div id="auth-div">
+
+      {
+        isMember ?
+
           <>
-          <Form isMember = {isMember} /> 
-          <button onClick = {toggleForm} >Create an Account?</button>
-                 
+            <Form
+              isMember={isMember}
+              submit={login}
+            />
+            <button onClick={toggleForm} >Create an Account?</button>
+
           </>
-          
-          : 
-          
+
+          :
+
           <>
-          <Form isMember = {isMember} /> 
-          <button onClick = {toggleForm}>Already a Member?</button>
-                   
+            <Form
+              isMember={isMember}
+              submit={signup}
+            />
+            <button onClick={toggleForm}>Already a Member?</button>
+
           </>
-        }
-        
-     
-       
-        </div>
-     );
+      }
+
+
+
+    </div>
+  );
 }
 
 export default Auth;
