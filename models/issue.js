@@ -17,6 +17,10 @@ const issueSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: "User"
+    },
+    username: {
+        type: String,
+        required: true
     }
 
 

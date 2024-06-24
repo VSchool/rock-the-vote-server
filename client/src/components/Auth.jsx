@@ -4,12 +4,13 @@ import { UserContext } from '../context/UserProvider';
 
 function Auth() {
 
-  const { login, signup } = useContext(UserContext)
+  const { login, signup, errMsg, resetAuthErr } = useContext(UserContext)
 
   const [isMember, setIsMember] = useState(false)
 
   const toggleForm = () => {
     setIsMember(!isMember)
+    resetAuthErr()
   }
 
   return (
@@ -22,6 +23,7 @@ function Auth() {
             <Form
               isMember={isMember}
               submit={login}
+              errMsg = {errMsg}
             />
             <button onClick={toggleForm} >Create an Account?</button>
 
@@ -33,6 +35,7 @@ function Auth() {
             <Form
               isMember={isMember}
               submit={signup}
+              errMsg = {errMsg}
             />
             <button onClick={toggleForm}>Already a Member?</button>
 

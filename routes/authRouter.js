@@ -16,7 +16,7 @@ authRouter.post('/signup', async(req, res, next) => {
         return res.status(201).send({user: savedUser.withoutPassword(), token})
     } catch (error) {
         res.status(500)
-        return next(err)
+        return next(error)
     }
 })
 

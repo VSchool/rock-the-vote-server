@@ -16,10 +16,13 @@ export default function UserProvider(props) {
     const initState = {
         user: JSON.parse(localStorage.getItem("user")) || {},
         token: localStorage.getItem("token") || "",
-        issues: []
+        issues: [],
+        errMsg: ""
     }
 
     const [userState, setUserState] = useState(initState)
+
+    const [allIssues, setAllIssues] = useState([])
 
     async function signup(creds) {
         try {
@@ -35,7 +38,7 @@ export default function UserProvider(props) {
                 }
             })
         } catch (error) {
-            console.log(error)
+            handleAuthErr(error.response.data.errMsg)
         }
     }
 
@@ -53,7 +56,7 @@ export default function UserProvider(props) {
                 }
             })
         } catch (error) {
-            console.log(error)
+            handleAuthErr(error.response.data.errMsg)
         }
     }
 
@@ -71,6 +74,24 @@ export default function UserProvider(props) {
         } catch (error) {
             console.log(error)
         }
+    }
+
+    function handleAuthErr(errMsg){
+        setUserState(prevUserState => {
+            return {
+                ...prevUserState,
+                errMsg
+            }
+        })
+    }
+
+    function resetAuthErr(){
+        setUserState(prevUserState => {
+            return {
+                ...prevUserState,
+                errMsg: ""
+            }
+        })
     }
 
     async function getUserIssues() {
@@ -101,6 +122,17 @@ export default function UserProvider(props) {
         }
     }
 
+    //get all issues
+    async function getAllIssues(){
+        try {
+            const res = await userAxios.get('/api/main/issues/allIssues')
+         setAllIssues(res.data)
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
     return (
         <UserContext.Provider value={{
@@ -109,7 +141,11 @@ export default function UserProvider(props) {
             login,
             logout,
             getUserIssues,
-            addIssue
+            addIssue,
+            handleAuthErr,
+            resetAuthErr,
+            getAllIssues,
+            allIssues
         }}>
             {props.children}
         </UserContext.Provider>
