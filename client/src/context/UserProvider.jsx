@@ -24,6 +24,8 @@ export default function UserProvider(props) {
 
     const [allIssues, setAllIssues] = useState([])
 
+    const [comments, setComments] = useState([])
+
     async function signup(creds) {
         try {
             const res = await axios.post('/api/auth/signup', creds)
@@ -76,7 +78,7 @@ export default function UserProvider(props) {
         }
     }
 
-    function handleAuthErr(errMsg){
+    function handleAuthErr(errMsg) {
         setUserState(prevUserState => {
             return {
                 ...prevUserState,
@@ -85,7 +87,7 @@ export default function UserProvider(props) {
         })
     }
 
-    function resetAuthErr(){
+    function resetAuthErr() {
         setUserState(prevUserState => {
             return {
                 ...prevUserState,
@@ -123,16 +125,100 @@ export default function UserProvider(props) {
     }
 
     //get all issues
-    async function getAllIssues(){
+    async function getAllIssues() {
         try {
             const res = await userAxios.get('/api/main/issues/allIssues')
-         setAllIssues(res.data)
-            
+            setAllIssues(res.data)
+
         } catch (error) {
             console.log(error)
         }
     }
 
+    async function deleteIssue(id) {
+        try {
+            const res = await userAxios.delete(`/api/main/issues/${id}`)
+            console.log(res.data)
+            setAllIssues(prevIssues => prevIssues.filter(issue => issue._id !== id))
+            setUserState(prevUserState => ({
+                ...prevUserState,
+                issues: prevUserState.issues.filter(issue => issue._id !== id)
+            }))
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    async function editIssue(id, update){
+        try {
+            const res = await userAxios.put(`/api/main/issues/edit/${id}`, update)
+            setAllIssues(prevIssues => prevIssues.map(issue => issue._id !== id ? issue : res.data))
+            setUserState(prevUserState => ({
+                ...prevUserState,
+                issues: prevUserState.issues.map(issue => issue._id !== id ? issue : res.data)
+            }))
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function handleUpvote(issueId) {
+        try {
+            const res = await userAxios.put(`/api/main/issues/upvotes/${issueId}`)
+            console.log(res.data)
+            setAllIssues(prevIssues => prevIssues.map(issue => issue._id === issueId ? res.data : issue))
+            setUserState(prevUserState => {
+                return {
+                    ...prevUserState,
+                    issues: prevUserState.issues.map(issue => issue._id === issueId ? res.data : issue)
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    async function handleDownvote(issueId) {
+        try {
+            const res = await userAxios.put(`/api/main/issues/downvotes/${issueId}`)
+            console.log(res.data)
+            setAllIssues(prevIssues => prevIssues.map(issue => issue._id === issueId ? res.data : issue))
+            setUserState(prevUserState => {
+                return {
+                    ...prevUserState,
+                    issues: prevUserState.issues.map(issue => issue._id === issueId ? res.data : issue)
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function getComments() {
+        try {
+            const res = await userAxios.get(`/api/main/comments/`)
+            setComments(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function addComment(newComment, issueId) {
+        try {
+            const res = await userAxios.post(`/api/main/comments/${issueId}`, newComment)
+            setComments(prevComments => [...prevComments, res.data])
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function deleteComment(commentId) {
+        try {
+            const res = await userAxios.delete(`/api/main/comments/${commentId}`)
+            setComments(prevComments => prevComments.filter(comment => comment._id !== commentId))
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <UserContext.Provider value={{
@@ -145,7 +231,15 @@ export default function UserProvider(props) {
             handleAuthErr,
             resetAuthErr,
             getAllIssues,
-            allIssues
+            allIssues,
+            handleUpvote,
+            handleDownvote,
+            deleteIssue, 
+            editIssue,
+            comments,
+            getComments,
+            addComment,
+            deleteComment
         }}>
             {props.children}
         </UserContext.Provider>

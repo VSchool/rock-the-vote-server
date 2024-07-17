@@ -1,24 +1,21 @@
 import React, {useContext, useEffect} from 'react';
 import { UserContext } from '../context/UserProvider';
-import Issue from "./Issue"
+import IssueList from './IssueList'
 
 
 function Public() {
 
-    const {allIssues, getAllIssues } = useContext(UserContext)
+    const {allIssues, getAllIssues, getComments } = useContext(UserContext)
 
     useEffect(()=>{
         getAllIssues()
+        getComments()
     }, [])
 
-    const issueElements = allIssues.map(issue => {
-        return (
-            <Issue {...issue} key = {issue._id}/>
-        )
-    })
+
     return ( 
         <>
-            {issueElements}
+            <IssueList issues={allIssues}/>
         </>
      );
 }

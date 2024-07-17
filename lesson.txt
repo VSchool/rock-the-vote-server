@@ -1,0 +1,10 @@
+MongoDB Update Operators: MongoDB provides various update operators that allow you to modify documents in a collection. These operators are used with the update and findOneAndUpdate methods in MongoDB.
+
+
+$inc: Increments a numeric field's value by a specified amount. (Positive or Negative value)
+
+
+$addToSet: Adds elements to an array field only if they are not already present.
+
+
+$pull: Removes all array elements that match a specified query.

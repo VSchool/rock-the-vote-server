@@ -42,13 +42,4 @@ authRouter.post('/login', async (req, res, next) => {
 })
 
 
-
-
-
-
-
-
-
-
-
 module.exports = authRouter

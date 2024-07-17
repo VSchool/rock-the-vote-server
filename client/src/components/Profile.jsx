@@ -6,10 +6,11 @@ import IssueForm from './IssueForm';
 
 function Profile() {
 
-        const {user, getUserIssues, issues } = useContext(UserContext)
+        const {user, getUserIssues, issues, getComments } = useContext(UserContext)
 
     useEffect(() => {
         getUserIssues()
+        getComments()
     }, [])
     
     
